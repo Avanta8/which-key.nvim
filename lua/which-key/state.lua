@@ -357,9 +357,11 @@ function M.start(opts)
   if opts.loop and not exit then
     -- NOTE: flush pending keys to prevent a trigger loop
     vim.api.nvim_feedkeys("", "x", false)
-    vim.schedule(function()
-      M.start(opts)
-    end)
+    if M.state ~= nil then
+      vim.schedule(function()
+        M.start(opts)
+      end)
+    end
   else
     M.state = nil
     View.hide()

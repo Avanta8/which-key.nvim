@@ -14,11 +14,20 @@ function M.show(opts)
     opts.delay = 0
   end
   opts.waited = vim.o.timeoutlen
-  ---@diagnostic disable-next-line: param-type-mismatch
-  if not require("which-key.state").start(opts) then
-    require("which-key.util").warn(
-      "No mappings found for mode `" .. (opts.mode or "n") .. "` and keys `" .. (opts.keys or "") .. "`"
-    )
+
+  if opts.loop == true then
+    require("which-key.state").stop()
+    vim.schedule(function()
+      ---@diagnostic disable-next-line: param-type-mismatch
+      require("which-key.state").start(opts)
+    end)
+  else
+    ---@diagnostic disable-next-line: param-type-mismatch
+    if not require("which-key.state").start(opts) then
+      require("which-key.util").warn(
+        "No mappings found for mode `" .. (opts.mode or "n") .. "` and keys `" .. (opts.keys or "") .. "`"
+      )
+    end
   end
 end
 
